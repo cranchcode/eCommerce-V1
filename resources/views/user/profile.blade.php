@@ -29,5 +29,9 @@
           <button class="btn btn-warning" type="submit">Delete</button>
       </form>
     </div>
+
+    <form action="/profile/logout" method="get">
+      <button class="btn btn-warning" type="submit">Logout</button>
+    </form>
 </body>
 </html>

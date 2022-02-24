@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Product;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // function showAll(){
-    //     return User::all();
-    // }
     
-    // Signup Section
+    /* Register Section */
+    // View Register
     function viewCreate(Request $req){
 
         if ($req->session()->has('user')){
@@ -22,6 +21,7 @@ class UserController extends Controller
         return view('user.signup');
     }
 
+    // Perform Register
     function createAccount(Request $req){
 
         if ($req->session()->has('user')){
@@ -42,7 +42,8 @@ class UserController extends Controller
         }
     }
 
-    //Login Section
+    /* Login Section */
+    // View Login
     function viewLogin(Request $req){
 
         if ($req->session()->has('user')){
@@ -52,6 +53,7 @@ class UserController extends Controller
         return view('user.login');
     }
 
+    // Perform Login
     function loginAccount(Request $req){
         
         if ($req->session()->has('user')){
@@ -77,7 +79,9 @@ class UserController extends Controller
         }
     }
 
-    //Profile Section
+    /* Profile Section */
+
+    // View Profile
     function viewProfile(Request $req){
 
         if ($req->session()->has('user')){
@@ -90,6 +94,7 @@ class UserController extends Controller
         }
     }
 
+    // Edit Profile
     function editAccount(Request $req){
         $inputs = $req->input();
         $user = User::where('email',$req->session()->get('user')->email)->first();
@@ -113,6 +118,7 @@ class UserController extends Controller
         }
     }
 
+    // Delete Profile
     function deleteAccount(Request $req){
         $inputs = $req->input();
         $user = User::where('email',$req->session()->get('user')->email)->first();
@@ -126,6 +132,30 @@ class UserController extends Controller
             }else {
                 return 'password is incorrect';
             }
+        }
+    }
+
+    // Logout Profile
+    function logout(Request $req){
+        if ($req->session()->has('user')){
+            $req->session()->forget('user');
+            return redirect('/login');
+        }
+        return redirect('/login');
+    }
+
+    function viewProducts(Request $req){
+
+        if ($req->session()->has('user')){
+            $user = User::where('email',$req->session()->get('user')->email)->first();
+            $products = Product::where('user_id',$user->id)->get()->all();
+
+            return view('product.shop',[
+                'products' => $products,
+                'user' => $user
+            ]);
+        }else {
+            return redirect('/login');
         }
     }
 }
